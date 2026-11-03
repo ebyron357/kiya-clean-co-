@@ -1,0 +1,2 @@
+import type { MetadataRoute } from 'next'
+export default function manifest():MetadataRoute.Manifest{return {name:'Kiya Clean Co.',short_name:'Kiya Clean',description:'A higher standard of clean. Request residential cleaning tailored to your home.',start_url:'/',display:'standalone',background_color:'#FAF7F2',theme_color:'#4A2257',icons:[{src:'/kiya-monogram.png',sizes:'1024x1024',type:'image/png',purpose:'any'}]}}

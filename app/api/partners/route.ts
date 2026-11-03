@@ -1,0 +1,7 @@
+import { NextResponse } from 'next/server'
+import { z } from 'zod'
+import { adminClient } from '@/lib/supabase/admin'
+import { createClient } from '@/lib/supabase/server'
+import { readBookingRequest,RequestError } from '@/lib/booking-request'
+const schema=z.object({submissionId:z.uuid(),name:z.string().trim().min(2).max(100),company:z.string().trim().min(2).max(100),email:z.email().max(254),phone:z.string().trim().regex(/^[+()\d .-]{7,30}$/),monthlyUnits:z.number().int().min(1).max(10000),notes:z.string().max(3000),website:z.string().max(0)})
+export async function POST(request:Request){try{const parsed=schema.safeParse(await readBookingRequest(request,'partner'));if(!parsed.success)throw new RequestError('Please check your contact and company details.',400);const {submissionId,monthlyUnits,website,...details}=parsed.data;const auth=await createClient();const {data:{user}}=await auth.auth.getUser();const {error}=await adminClient().from('partners').insert({...details,submission_id:submissionId,monthly_units:monthlyUnits,user_id:user?.id??null});if(error&&error.code!=='23505')throw error;return NextResponse.json({success:true},{status:201})}catch(e){if(e instanceof RequestError)return NextResponse.json({error:e.message},{status:e.status});console.error('[kiya] Partner submission failed');return NextResponse.json({error:'We could not save your inquiry. Please try again.'},{status:503})}}

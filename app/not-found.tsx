@@ -1,0 +1,3 @@
+import Link from 'next/link'
+import { KiyaArch, KiyaArrow, KiyaTowel } from '@/components/kiya-mark'
+export default function NotFound(){return <main className="shell section"><div className="page-intro"><div className="not-found-illustration" aria-hidden="true"><KiyaArch size={160}/><KiyaTowel size={38}/></div><p className="eyebrow">404 · A LITTLE LOST?</p><h1>This room&apos;s already clean.</h1><p>Let’s find the right place for your fresh start.</p><div className="form-actions"><Link href="/" className="button outline">Home</Link><Link href="/book" className="button primary">Get my price <KiyaArrow/></Link></div></div></main>}

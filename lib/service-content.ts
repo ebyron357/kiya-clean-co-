@@ -1,0 +1,9 @@
+export const standardChecklist={
+ 'Kitchen':['Counters wiped and sanitized','Backsplash wiped','Sink scrubbed and polished','Faucet and fixtures shined','Stovetop degreased','Range hood wiped','Microwave inside and out','Appliance exteriors wiped','Cabinet fronts spot-cleaned','Cabinet handles sanitized','Table and chairs wiped','Trash emptied and relined','Floors vacuumed','Floors mopped'],
+ 'Bathrooms':['Toilet inside, outside, and base','Tub and shower scrubbed','Shower glass and doors','Tile surfaces wiped','Sink and vanity cleaned','Faucets polished','Mirrors streak-free','Towel bars and fixtures','Cabinet fronts wiped','Trash emptied and relined','Floors vacuumed','Floors mopped'],
+ 'Bedrooms & living areas':['Reachable surfaces dusted','Furniture tops dusted','Decor and frames dusted','Light switches wiped','Door handles wiped','Ceiling fans dusted (reachable)','Lamps and shades dusted','Window sills dusted','Baseboards spot-cleaned','Upholstery vacuumed','Crumbs removed under cushions','Beds made','Mirrors and glass cleaned','Carpets vacuumed'],
+ 'Whole home':['Hard floors mopped','Stairs vacuumed','Railings and banisters wiped','Entryway cleaned','Cobwebs removed','Reachable vents dusted','Trash emptied in every room','Pet hair removed from floors and furniture','Final team walkthrough','The Kiya Turndown finish'],
+} as const
+export const deepExtras=['Inside microwave','Baseboards hand-wiped','Door frames','Light fixtures','Vents','Window sills and tracks','Cabinet fronts detailed']
+export const moveExtras=['Inside all cabinets and drawers','Inside fridge','Inside oven','Closets','Interior windows']
+export const serviceIntros={standard:'Your home, kept beautifully. Weekly, biweekly, or monthly.',deep:'Top to bottom, inside and out. The reset your home deserves.',move:'Walkthrough-ready, guaranteed. If anything’s flagged, we re-clean it free.'}

@@ -1,0 +1,1 @@
+export default function BookingLoading(){return <main className="shell section" aria-busy="true"><div className="page-intro"><p className="eyebrow">MAKE ROOM FOR LIVING</p><h1>Your clean starts here.</h1><p role="status">Preparing your home&apos;s price…</p></div></main>}

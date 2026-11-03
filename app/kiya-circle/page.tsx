@@ -1,0 +1,3 @@
+import { KiyaCircle } from '@/components/kiya-circle'
+export const metadata={title:'The Kiya Circle',description:'Biweekly home care with first-clean add-ons, a 12-month rate lock, priority booking, and a monthly extra. Limited to 50 members.',alternates:{canonical:'/kiya-circle'}}
+export default function Page(){return <main className="shell section service-detail"><header className="page-intro"><p className="eyebrow">YOUR HOME, IN GOOD COMPANY</p><h1>A little more care.<br/>Every visit.</h1><p>Meet the Kiya Circle, our membership for a beautifully maintained home.</p></header><KiyaCircle/></main>}

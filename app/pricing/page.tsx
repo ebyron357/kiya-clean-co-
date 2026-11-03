@@ -1,0 +1,4 @@
+import { PricingTables } from '@/components/pricing-tables'
+import { KiyaCircle } from '@/components/kiya-circle'
+export const metadata={title:'Flat-Rate Cleaning Prices',alternates:{canonical:'/pricing'},description:'Explore Kiya’s standard, deep, and move-in/move-out cleaning rates, optional extras, and Kiya Circle membership.'}
+export default function PricingPage(){return <main className="shell section kiya-pricing"><header className="kiya-pricing-intro"><p className="eyebrow">THOUGHTFUL CARE. CLEAR PRICES.</p><h1>Your clean.<br/><em>No guesswork.</em></h1><p>Flat-rate cleaning for the home you love.<br/>Find your fit, then let us take care of the details.</p></header><PricingTables/><KiyaCircle/><p className="kiya-pricing-note">Your request does not reserve an appointment or a Kiya Circle seat. We’ll confirm your home’s scope, offer eligibility, availability, and applicable tax before you commit. No payment is taken online.</p></main>}
