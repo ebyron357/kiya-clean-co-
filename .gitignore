@@ -7,3 +7,5 @@ node_modules/
 next-env.d.ts
 mise.local.toml
 mise.lock
+playwright-report/
+test-results/

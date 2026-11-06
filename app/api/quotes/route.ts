@@ -4,6 +4,7 @@ import { adminClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
 import { quoteSchema } from '@/lib/quote-schema'
 import { calculateQuote } from '@/lib/pricing'
+import { sameQuoteSubmission } from '@/lib/quote-idempotency'
 import { readJsonRequest, RequestError } from '@/lib/request-validation'
 
 export async function POST(request: Request) {
@@ -23,18 +24,20 @@ export async function POST(request: Request) {
     const { data: { user }, error: authError } = await client.auth.getUser()
     if (authError && authError.name !== 'AuthSessionMissingError') throw authError
     const { submissionId, name, email, phone, zip, consent, marketing, website, ...details } = q
-    const { error } = await db.from('kiya_quotes').insert({
+    const record = {
       submission_id: submissionId, user_id: user?.id ?? null,
       customer_name: name, email, phone, zip,
       details: { ...details, pricing: calculateQuote(null, details.extras) },
       marketing_consent: marketing,
-    })
+    }
+    const { error } = await db.from('kiya_quotes').insert(record)
     if (error) {
       if (error.code !== '23505') throw error
       // Only an existing submission ID is a retry. A different unique violation
       // must never be reported to the customer as a successfully saved request.
-      const existing = await db.from('kiya_quotes').select('submission_id').eq('submission_id', submissionId).maybeSingle()
+      const existing = await db.from('kiya_quotes').select('submission_id,user_id,customer_name,email,phone,zip,marketing_consent,details').eq('submission_id', submissionId).maybeSingle()
       if (existing.error || !existing.data) throw error
+      if (!sameQuoteSubmission(existing.data, record)) throw new RequestError('This request identifier was already used. Reload to start a new request.', 409)
     }
     return NextResponse.json({ success: true, message: 'Your request has been saved. This is not a confirmed booking.' }, { status: 201 })
   } catch (error) {
