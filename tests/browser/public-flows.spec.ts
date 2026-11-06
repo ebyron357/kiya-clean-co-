@@ -38,7 +38,7 @@ test('recovery is visibly gated and direct reset cannot bypass gate', async ({ p
 })
 
 test('signed-out private routes do not expose account or owner records', async ({ page }) => {
-  for (const path of ['/account', '/admin', '/admin/quotes/00000000-0000-4000-8000-000000000001']) {
+  for (const path of ['/account', '/account/quotes/00000000-0000-4000-8000-000000000001', '/admin', '/admin/quotes/00000000-0000-4000-8000-000000000001']) {
     await page.goto(path)
     await expect(page).toHaveURL(/\/auth\/login$/)
     await expect(page.getByRole('button', { name: 'Sign in', exact: true })).toBeVisible()
@@ -76,4 +76,16 @@ test('quote preference flows into mocked persistence request, never a booking', 
   expect(captured).toMatchObject({ preferredDate: '2099-03-01', service: 'Deep Cleaning', frequency: 'Every two weeks', extras: ['Oven cleaning'] })
   expect(captured).not.toHaveProperty('totalCents')
   expect(captured).not.toHaveProperty('status', 'confirmed')
+})
+
+test('quote server module rejects invalid requests before any persistence', async ({ request }) => {
+  const origin = 'http://localhost:3107'
+  const missingOrigin = await request.post('/api/quotes', { data: {} })
+  expect(missingOrigin.status()).toBe(403)
+  const invalidQuote = await request.post('/api/quotes', { headers: { origin }, data: {} })
+  expect(invalidQuote.status()).toBe(400)
+  const malformed = await request.post('/api/quotes', { headers: { origin, 'content-type': 'application/json' }, data: '{' })
+  expect(malformed.status()).toBe(400)
+  const tooLarge = await request.post('/api/quotes', { headers: { origin, 'content-type': 'application/json' }, data: JSON.stringify('é'.repeat(8000)) })
+  expect(tooLarge.status()).toBe(413)
 })
