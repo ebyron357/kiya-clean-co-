@@ -1,0 +1,7 @@
+import Image from 'next/image'
+import Link from 'next/link'
+import { ArrowUpRight, Sparkles, Check } from 'lucide-react'
+import { HomeSections } from '@/components/home-sections'
+import { ZipChecker } from '@/components/zip-checker'
+export default function Page(){return <main><section className="hero shell"><div className="hero-copy"><p className="eyebrow"><span/> YOUR HOME, BEAUTIFULLY CARED FOR</p><h1>Come home to<br/>a higher standard<br/><em>of clean.</em></h1><p className="hero-description">More comfort. More free time.<br/>More reasons to love coming home.</p><div className="hero-actions"><Link href="/quote" className="button primary">Get my cleaning quote <ArrowUpRight size={18}/></Link><Link href="/services" className="text-link">Explore our services <ArrowRightIcon/></Link></div><div className="hero-reassurance"><Check size={15}/><span>Your home. Your preferences. No pressure.</span></div></div><div className="hero-photo"><Image src="/images/clean-home.png" alt="Sunlight fills a beautifully clean living room with a linen sofa, oak table, and fresh flowers" fill priority sizes="(max-width: 768px) 100vw, 55vw"/><div className="photo-note"><span className="note-icon"><Sparkles size={23}/></span><div><strong>Fresh space. Clear mind.</strong><span>That’s the Kiya feeling.</span></div></div><span className="photo-label">A HIGHER STANDARD OF CLEAN</span></div></section><div className="shell"><ZipChecker/></div><HomeSections/></main>}
+function ArrowRightIcon(){return <ArrowUpRight size={16} aria-hidden="true"/>}
