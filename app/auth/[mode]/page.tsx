@@ -22,9 +22,9 @@ export default async function AuthPage({ params, searchParams }: {
   const recovery = mode === 'forgot-password' || mode === 'reset-password'
   const { error } = await searchParams
   return <main className="shell section"><div className="auth-box">
-    <div className="page-intro"><p className="eyebrow">A LITTLE PLACE OF YOUR OWN</p>
-      <h1>{mode === 'signup' ? 'Make yourself at home.' : mode === 'forgot-password' ? 'Find your way back.' : mode === 'reset-password' ? 'A fresh start for your account.' : 'Welcome home.'}</h1>
-      <p>{mode === 'signup' ? 'Keep your quote requests and cleaning preferences in one thoughtful place.' : recovery ? 'Secure access to your little corner of Kiya.' : 'Your requests, your preferences, your little corner of Kiya.'}</p>
+    <div className="page-intro"><p className="eyebrow">KIYA ACCOUNT</p>
+      <h1>{mode === 'signup' ? 'Create your account.' : mode === 'forgot-password' ? 'Reset your password.' : mode === 'reset-password' ? 'Set a new password.' : 'Sign in to Kiya.'}</h1>
+      <p>{mode === 'signup' ? 'View your quote requests and save cleaning preferences.' : recovery ? 'We will help you restore access to your account.' : 'View cleaning requests and preferences in your account.'}</p>
     </div>
     {error === 'link' && <p className="status-note" role="alert">That link is invalid or expired. Request a new link and open it in the same browser.</p>}
     {mode === 'forgot-password' ? <RecoveryRequestForm enabled={enabled}/> : mode === 'reset-password' ? <RecoveryPasswordForm/> : <AuthForm signup={mode === 'signup'}/>}
