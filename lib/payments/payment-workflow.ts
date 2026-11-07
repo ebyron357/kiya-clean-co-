@@ -2,7 +2,11 @@ import { calculatePaymentPlan, validatePaymentChoice, validatePaymentStage } fro
 import type { ApprovedCheckoutOffer, PaymentChoice, PaymentPlan, PaymentStage } from './payment-plan'
 
 export class PaymentWorkflowError extends Error {
-  constructor(message: string, public readonly status = 503) { super(message) }
+  readonly status: number
+  constructor(message: string, status = 503) {
+    super(message)
+    this.status = status
+  }
 }
 
 export type CheckoutClaim = {
