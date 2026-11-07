@@ -65,7 +65,7 @@ test('rejects other customers and unsupported choices without charging', async (
 
 test('reuses an already bound session returned by the atomic store', async () => {
   const context = setup({ store: { async claimCheckout() {
-    return { kind: 'existing', url: 'https://checkout.stripe.com/test-existing' }
+    return { kind: 'existing', url: 'https://checkout.stripe.com/test-existing', customerId: 'user-1', bookingId: 'booking-1', choice: 'deposit', stage: 'initial' }
   } } })
   assert.deepEqual(await initiatePaymentCheckout(entry(), context.deps),
     { existing: true, url: 'https://checkout.stripe.com/test-existing' })
@@ -74,9 +74,17 @@ test('reuses an already bound session returned by the atomic store', async () =>
 
 test('rejects malicious saved Checkout redirects', async () => {
   const context = setup({ store: { async claimCheckout() {
-    return { kind: 'existing', url: 'https://checkout.stripe.com.evil.example/steal' }
+    return { kind: 'existing', url: 'https://checkout.stripe.com.evil.example/steal', customerId: 'user-1', bookingId: 'booking-1', choice: 'deposit', stage: 'initial' }
   } } })
   await assert.rejects(() => initiatePaymentCheckout(entry(), context.deps), /could not be verified/i)
+})
+
+test('rejects a saved checkout session belonging to another customer', async () => {
+  const context = setup({ store: { async claimCheckout() {
+    return { kind: 'existing', url: 'https://checkout.stripe.com/valid',
+      customerId: 'another-user', bookingId: 'booking-1', choice: 'deposit', stage: 'initial' }
+  } } })
+  await assert.rejects(() => initiatePaymentCheckout(entry(), context.deps), /ownership/i)
 })
 
 test('expires an orphaned Stripe session rather than showing an unpaid checkout link', async () => {

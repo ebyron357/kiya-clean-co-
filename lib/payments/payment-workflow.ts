@@ -42,7 +42,7 @@ export interface PaymentStore {
   // expiry, existing payment attempts, and unique idempotency. No read-then-
   // insert outside an atomic constraint.
   claimCheckout(input: { customerId: string; bookingId: string; choice: PaymentChoice; stage: PaymentStage; nowMs: number }):
-    Promise<{ kind: 'claimed'; claim: CheckoutClaim } | { kind: 'existing'; url: string } | { kind: 'unavailable' }>
+    Promise<{ kind: 'claimed'; claim: CheckoutClaim } | { kind: 'existing'; url: string; customerId: string; bookingId: string; choice: PaymentChoice; stage: PaymentStage } | { kind: 'unavailable' }>
   // Atomically associates the Stripe session with the claim BEFORE exposing
   // the Checkout URL to the customer. Reject duplicate session IDs.
   bindSession(input: { claimId: string; sessionId: string; amountCents: number; expiresAtSeconds: number }): Promise<boolean>
@@ -78,6 +78,10 @@ export async function initiatePaymentCheckout(
   })
   if (reservation.kind === 'unavailable') throw new PaymentWorkflowError('Online payment is not available yet.')
   if (reservation.kind === 'existing') {
+    if (reservation.customerId !== input.actorId || reservation.bookingId !== input.bookingId ||
+        reservation.choice !== choice || reservation.stage !== stage) {
+      throw new PaymentWorkflowError('Saved Checkout session ownership could not be verified.', 403)
+    }
     let trusted = false
     try {
       const url = new URL(reservation.url)
