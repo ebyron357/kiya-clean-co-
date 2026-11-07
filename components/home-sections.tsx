@@ -1,8 +1,129 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowUpRight, Check, House, Sparkles, KeyRound, CalendarDays, Heart, Leaf, SlidersHorizontal, Gift, ArrowRight } from 'lucide-react'
+import { ArrowUpRight, Check, House, ClipboardCheck, KeyRound, CalendarDays } from 'lucide-react'
 import { services, faqs } from '@/lib/site'
-const icons=[House,Sparkles,KeyRound,CalendarDays]
-export function ServiceCards(){return <div className="service-grid">{services.map((s,i)=>{const Icon=icons[i];return <Link href={`/services/${s.slug}`} className="service-card" key={s.slug}><div className="service-image"><Image src={s.image} alt={['Sunlit living room with a linen sofa','Freshly cleaned kitchen with natural finishes','Freshly made bed in a bright bedroom','Inviting living room ready to enjoy'][i]} fill sizes="(max-width: 600px) 90vw, (max-width: 1000px) 45vw, 25vw"/><span className="service-icon"><Icon size={21}/></span></div><div className="service-copy"><h3>{s.name}</h3><p>{s.short}</p><span>Explore service <ArrowUpRight size={17}/></span></div></Link>})}</div>}
-export function FaqSection(){return <section className="section shell faq-section" id="faq"><div><p className="eyebrow">A LITTLE CLARITY</p><h2>Good questions.<br/>Thoughtful answers.</h2><p className="muted">Because peace of mind starts before<br className="desktop-only"/> we arrive at your door.</p><Link href="/contact" className="text-link">More questions? Let’s talk <ArrowUpRight size={17}/></Link></div><div className="faq-list">{faqs.map(([q,a])=><details key={q}><summary>{q}<span aria-hidden="true">+</span></summary><p>{a}</p></details>)}</div></section>}
-export function HomeSections(){return <><div className="trust-strip shell">{[[Heart,'Care in every corner'],[SlidersHorizontal,'Cleaning that fits your life'],[Leaf,'More room to breathe'],[CalendarDays,'A routine made easier']].map(([Icon,text])=>{const I=Icon as typeof Heart;return <div key={String(text)}><I size={19}/><span>{String(text)}</span></div>})}</div><section className="section shell" id="services"><div className="section-heading"><div><p className="eyebrow">A CLEAN FOR EVERY CHAPTER</p><h2>Your home. Your kind of clean.</h2></div><Link href="/services" className="text-link">Explore all services <ArrowUpRight size={17}/></Link></div><ServiceCards/></section><section className="how-section"><div className="shell section"><div className="center-heading"><p className="eyebrow">LESS ON YOUR LIST. MORE IN YOUR LIFE.</p><h2>A fresh start is as easy as one, two, clean.</h2></div><div className="steps">{[['01','Tell us about your home','A few thoughtful details help us understand exactly what your space needs.'],['02','Find your perfect clean','Choose a service and your preferred routine. We’ll confirm the details together.'],['03','Come home to a little happier','Leave the cleaning on our list. Put something you love back on yours.']].map(([n,t,p])=><div key={n}><span className="step-number">{n}</span><h3>{t}</h3><p>{p}</p></div>)}</div><div className="center"><Link href="/quote" className="button primary">Let’s start with your home <ArrowUpRight size={17}/></Link></div></div></section><section className="section shell difference"><div className="difference-image"><Image src="/images/clean-kitchen.png" alt="A thoughtfully arranged, clean kitchen with flowers and natural light" fill sizes="(max-width: 768px) 90vw, 45vw"/><div className="image-caption"><Sparkles size={22}/><span>The difference is in the details.</span></div></div><div className="difference-copy"><p className="eyebrow">THE KIYA WAY</p><h2>Not just a cleaner home.<br/><em>A lighter feeling.</em></h2><p>It’s the clear countertop. The freshly made bed. The feeling of walking through your door and exhaling.</p><p>We’re building Kiya Clean Co. around the little things that make a big difference—with thoughtful cleaning and clear communication from the very start.</p><ul className="check-list">{['A clear, room-by-room cleaning checklist','Your priorities, thoughtfully considered','Service details agreed before we begin'].map(t=><li key={t}><Check size={17}/>{t}</li>)}</ul><Link href="/about" className="text-link">Get to know Kiya <ArrowUpRight size={17}/></Link></div></section><section className="shell rewards-pair"><div className="reward-feature"><CalendarDays size={29}/><p className="eyebrow">A ROUTINE YOU’LL LOVE</p><h2>Keep that just-cleaned<br/>feeling going.</h2><p>Weekly, biweekly, or monthly. Find a cleaning rhythm that makes room for your life.</p><Link href="/services/recurring-cleaning" className="text-link">Find your rhythm <ArrowRight size={17}/></Link></div><div className="reward-feature lavender"><Gift size={29}/><p className="eyebrow">MORE GOOD THINGS TO COME</p><h2>A little thank-you.<br/>For coming home to Kiya.</h2><p>We’re preparing thoughtful rewards and referral benefits for our community. Get to know what’s coming.</p><Link href="/rewards" className="text-link">Discover Kiya Rewards <ArrowRight size={17}/></Link></div></section><FaqSection/></>}
+
+const icons = [House, ClipboardCheck, KeyRound, CalendarDays]
+
+export function ServiceCards() {
+  return (
+    <div className="service-grid">
+      {services.map((service, index) => {
+        const Icon = icons[index]
+        return (
+          <Link href={`/services/${service.slug}`} className="service-card" key={service.slug}>
+            <div className="service-image">
+              <Image
+                src={service.image}
+                alt={[
+                  'Sunlit living room with a linen sofa',
+                  'Clean kitchen with natural finishes',
+                  'Made bed in a bright bedroom',
+                  'Living room ready for everyday use',
+                ][index]}
+                fill
+                sizes="(max-width: 600px) 90vw, (max-width: 1000px) 45vw, 25vw"
+              />
+              <span className="service-icon"><Icon size={21} /></span>
+            </div>
+            <div className="service-copy">
+              <h3>{service.name}</h3>
+              <p>{service.short}</p>
+              <span>View details <ArrowUpRight size={17} /></span>
+            </div>
+          </Link>
+        )
+      })}
+    </div>
+  )
+}
+
+export function FaqSection() {
+  return (
+    <section className="section shell faq-section" id="faq">
+      <div>
+        <p className="eyebrow">FAQ</p>
+        <h2>Frequently asked questions.</h2>
+        <p className="muted">What to know before requesting cleaning.</p>
+        <Link href="/contact" className="text-link">Contact us <ArrowUpRight size={17} /></Link>
+      </div>
+      <div className="faq-list">
+        {faqs.map(([question, answer]) => (
+          <details key={question}>
+            <summary>{question}<span aria-hidden="true">+</span></summary>
+            <p>{answer}</p>
+          </details>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+export function HomeSections() {
+  return (
+    <>
+      <section className="section shell" id="services">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">CLEANING SERVICES</p>
+            <h2>Choose the cleaning you need.</h2>
+          </div>
+          <Link href="/services" className="text-link">All services <ArrowUpRight size={17} /></Link>
+        </div>
+        <ServiceCards />
+      </section>
+
+      <section className="how-section">
+        <div className="shell section">
+          <div className="center-heading">
+            <p className="eyebrow">HOW IT WORKS</p>
+            <h2>From request to confirmed service.</h2>
+          </div>
+          <div className="steps">
+            {[
+              ['01', 'Describe your home', 'Choose a service, enter your ZIP code, and share what needs cleaning.'],
+              ['02', 'Review the quote', 'We confirm the tasks and price before you agree to service.'],
+              ['03', 'Confirm the appointment', 'Available dates depend on your location and the requested service. A quote request is not a booking.'],
+            ].map(([number, title, description]) => (
+              <div key={number}>
+                <span className="step-number">{number}</span>
+                <h3>{title}</h3>
+                <p>{description}</p>
+              </div>
+            ))}
+          </div>
+          <div className="center">
+            <Link href="/quote" className="button primary">Request a quote <ArrowUpRight size={17} /></Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="section shell difference">
+        <div className="difference-image">
+          <Image
+            src="/images/clean-kitchen.png"
+            alt="Clean kitchen with flowers and natural light"
+            fill
+            sizes="(max-width: 768px) 90vw, 45vw"
+          />
+        </div>
+        <div className="difference-copy">
+          <p className="eyebrow">WHAT TO EXPECT</p>
+          <h2>Know what is included before service.</h2>
+          <p>Each cleaning option has a proposed checklist. We review your priorities, the final scope, and the price before confirming any appointment.</p>
+          <p>Include rooms that need extra attention and any product preferences in your request.</p>
+          <ul className="check-list">
+            {[
+              'A service checklist you can review',
+              'Space to share room priorities and preferences',
+              'Price and availability confirmed before booking',
+            ].map(item => <li key={item}><Check size={17} />{item}</li>)}
+          </ul>
+          <Link href="/about" className="text-link">About Kiya Clean Co. <ArrowUpRight size={17} /></Link>
+        </div>
+      </section>
+
+      <FaqSection />
+    </>
+  )
+}

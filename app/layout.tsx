@@ -7,10 +7,10 @@ const sans = DM_Sans({ subsets: ['latin'], variable: '--font-body' })
 const serif = Cormorant_Garamond({ subsets: ['latin'], weight: ['400','500','600'], variable: '--font-display' })
 
 export const metadata: Metadata = {
-  title: { default: 'Kiya Clean Co. | A Higher Standard of Clean', template: '%s | Kiya Clean Co.' },
-  description: 'Thoughtful residential cleaning for more comfort, more free time, and more reasons to love coming home. Explore services and request your personalized quote.',
+  title: { default: 'Kiya Clean Co. | Residential Cleaning', template: '%s | Kiya Clean Co.' },
+  description: 'Request a residential cleaning quote for standard, deep, move-in, move-out, or recurring cleaning. Coverage, scope, and pricing are confirmed before booking.',
   manifest: '/manifest.webmanifest',
-  generator: 'v0.app',
+  robots: { index: false, follow: false }, // Keep unlaunched development previews out of search results.
   icons: {
     icon: [
       {
