@@ -81,8 +81,9 @@ export function calculatePaymentPlan(
     throw new PaymentPlanError('The approved deposit terms are invalid.')
   }
   if (choice === 'deposit' && configuredDeposit === null) throw new PaymentPlanError('Deposits are not configured for this booking.')
-  const depositCents = choice === 'deposit' ? configuredDeposit! : offer.totalCents
-  const balanceDueCents = offer.totalCents - depositCents
+  const depositCents = choice === 'deposit' ? configuredDeposit! : 0
+  const initialAmountCents = choice === 'deposit' ? depositCents : offer.totalCents
+  const balanceDueCents = offer.totalCents - initialAmountCents
 
   if (stage === 'initial') {
     if (offer.status !== 'held' || offer.offerExpiresAtMs <= nowMs) throw new PaymentPlanError('The approved quote or reservation has expired.')
@@ -95,7 +96,7 @@ export function calculatePaymentPlan(
     }
     return { bookingId: offer.bookingId, customerId: offer.customerId,
       serviceLabel: offer.serviceLabel, currency: 'usd', choice, stage,
-      amountCents: depositCents, totalCents: offer.totalCents, depositCents,
+      amountCents: initialAmountCents, totalCents: offer.totalCents, depositCents,
       balanceDueCents, termsVersion: offer.termsVersion,
       pricingApprovalId: offer.pricingApprovalId, checkoutExpiresAtSeconds }
   }

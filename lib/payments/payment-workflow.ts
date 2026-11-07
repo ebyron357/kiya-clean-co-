@@ -77,7 +77,15 @@ export async function initiatePaymentCheckout(
     customerId: input.actorId, bookingId: input.bookingId, choice, stage, nowMs,
   })
   if (reservation.kind === 'unavailable') throw new PaymentWorkflowError('Online payment is not available yet.')
-  if (reservation.kind === 'existing') return { url: reservation.url, existing: true }
+  if (reservation.kind === 'existing') {
+    let trusted = false
+    try {
+      const url = new URL(reservation.url)
+      trusted = url.protocol === 'https:' && url.hostname === 'checkout.stripe.com' && !url.username && !url.password
+    } catch { /* malformed URL */ }
+    if (!trusted) throw new PaymentWorkflowError('Saved Checkout link could not be verified.')
+    return { url: reservation.url, existing: true }
+  }
   const claim = reservation.claim
   if (claim.customerId !== input.actorId || claim.bookingId !== input.bookingId || !claim.claimId) {
     throw new PaymentWorkflowError('Booking ownership could not be verified.', 403)

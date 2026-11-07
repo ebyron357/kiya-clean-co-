@@ -25,4 +25,12 @@ assert.match(html,/Kiya Clean/)
 assert.doesNotMatch(html,/maximum-scale=1/)
 assert.equal(home.headers.get('x-content-type-options'),'nosniff')
 console.log('PASS production-mode home, zoom permission, security header')
-console.log('9 HTTP smoke checks passed; no valid quote or database request submitted.')
+for (const [path, body] of [
+  ['/api/payments/checkout', JSON.stringify({ bookingId: '00000000-0000-4000-8000-000000000001', choice: 'full', stage: 'initial' })],
+  ['/api/payments/webhook', '{}'],
+]) {
+  const result = await fetch(origin + path, { method: 'POST', headers: { 'content-type': 'application/json' }, body })
+  assert.equal(result.status, 503, path + ' must be disabled without verified Stripe test configuration')
+  console.log('PASS payment endpoint remains disabled by default: ' + path)
+}
+console.log('11 HTTP smoke checks passed; no valid quote or database request submitted.')

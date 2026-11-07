@@ -72,6 +72,13 @@ test('reuses an already bound session returned by the atomic store', async () =>
   assert.deepEqual(context.calls, [])
 })
 
+test('rejects malicious saved Checkout redirects', async () => {
+  const context = setup({ store: { async claimCheckout() {
+    return { kind: 'existing', url: 'https://checkout.stripe.com.evil.example/steal' }
+  } } })
+  await assert.rejects(() => initiatePaymentCheckout(entry(), context.deps), /could not be verified/i)
+})
+
 test('expires an orphaned Stripe session rather than showing an unpaid checkout link', async () => {
   const context = setup({ store: { async bindSession() { return false } } })
   await assert.rejects(() => initiatePaymentCheckout(entry(), context.deps), /could not be reserved/i)

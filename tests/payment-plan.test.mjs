@@ -17,7 +17,7 @@ const offer = (update = {}) => ({
 test('full payment uses the exact owner-approved total without a second charge', () => {
   const plan = calculatePaymentPlan(offer(), 'full', 'initial', now)
   assert.equal(plan.amountCents, 19900)
-  assert.equal(plan.depositCents, 19900)
+  assert.equal(plan.depositCents, 0)
   assert.equal(plan.balanceDueCents, 0)
   assert.equal(plan.checkoutExpiresAtSeconds, Math.floor((now + 3_600_000) / 1000))
 })

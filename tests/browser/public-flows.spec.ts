@@ -28,6 +28,12 @@ test('public copy removes template markers and accurately describes ZIP entry', 
   await expect(page).toHaveURL(url => url.pathname === '/quote' && url.searchParams.get('zip') === '28227')
 })
 
+test('Stripe return page never claims payment succeeded from a browser redirect', async ({ page }) => {
+  await page.goto('/payment/return?session_id=cs_test_synthetic')
+  await expect(page.getByRole('heading', { name: 'Check your booking status.' })).toBeVisible()
+  await expect(page.getByText('does not confirm payment or reserve an appointment', { exact: false })).toBeVisible()
+})
+
 test('mobile navigation Escape restores focus', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 })
   await page.goto('/')
