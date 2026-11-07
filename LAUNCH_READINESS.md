@@ -1,49 +1,104 @@
-# Kiya Clean Co. — launch readiness
+# Kiya Clean Co. — canonical launch-readiness record
 
-Status: PARTIALLY COMPLETE. Pre-launch/staging foundation, not production ready. No live domain deployment or payment activation performed.
+**Updated:** November 7, 2026  
+**Release decision:** **NO-GO** for public commercial launch, bookings, and payments.  
+**Current source branch:** `fix/deployed-source-readiness` in [draft PR #1](https://github.com/ebyron357/kiya-clean-co-/pull/1).  
+**Deployment:** An earlier website is deployed; the latest source changes are not merged, promoted, or verified on a public live deployment. A Vercel READY state is not end-to-end launch evidence.
 
-## Implemented
-- Plum/ivory responsive public website with original generated interior photography; home, services, four service-detail pages, about, service areas, rewards, referrals, seasonal page, contact/FAQ, and preliminary legal notices.
-- Mobile navigation, sticky quote CTA, ZIP entry, six-step quote wizard with Zod validation and React Hook Form. No invented rates, coverage, reviews, credentials, or availability.
-- Real Supabase quote persistence with duplicate submission IDs, database-backed throttling, same-origin checking, honeypot, consent fields, and server-validated content. Prices submitted by the browser are not used.
-- Deterministic integer-cent pricing engine and eight example-only unit tests. Live pricing remains intentionally unconfigured; the engine records an unconfigured price status rather than a fake quote.
-- Supabase email/password signup, confirmation callback, sign-in, sign-out, session refresh, server-gated customer dashboard, own quote list, pending-request withdrawal, preferences storage, and own reward-ledger readout.
-- Server-gated read-only admin request list. Admin role uses trusted app_metadata, never user_metadata. No public role assignment.
-- Database foundations: kiya_quotes, kiya_preferences, kiya_reward_ledger, kiya_referrals, kiya_settings, kiya_audit, kiya_rate_limits. RLS enabled on every table. Ledger and referrals are not client-writable.
-- Booking/payment interfaces with explicit unconfigured implementations; no fabricated confirmation or checkout.
-- Metadata, manifest, baseline security response headers, reduced-motion support, visible focus styles, form labels, and error recovery screen.
+This document supersedes earlier launch-readiness counts and status summaries while preserving their verified historical evidence. The product is intended to support paid residential cleaning with **two owner-approved choices: pay in full or pay a deposit, with the remaining balance paid later**. Approval of these two options does not approve a particular price, deposit amount, cancellation policy, or provider credential.
 
-## Verified
-- TypeScript check passed before final verification.
-- Production build passed after correcting BigInt target compatibility.
-- Final pnpm test: 15 tests passed (eight pricing and seven request-validation tests). Final pnpm build passed, including TypeScript.
-- Pricing coverage: unconfigured pricing, integer-cent breakdown, duplicate/unknown extras, negative/fractional rates, excessive discounts, and zero-floor credit. Request coverage: valid input, invalid ZIP, missing consent, honeypot, oversized notes, unknown extras, and stripping browser totals.
-- Final mobile homepage: document width 375 matches viewport 375; zero broken images.
-- Browser at 375 x 812: mobile menu, invalid ZIP validation, all six quote steps, extra selection, biweekly preference, review, and successful database-backed request response.
-- One labeled QA request was saved: name Automated QA Test, email kiya-qa@example.com, notes explicitly stating no service is required. Do not treat it as a customer lead.
-- Anonymous /admin navigation redirects to /auth/login.
-- Final homepage screenshots captured at 375 x 812 and 1440 x 1000.
+## 1. Product and brand baseline
 
-## Unverified / unfinished
-- Full authenticated signup/login lifecycle requires a controlled mailbox and configured email delivery; no test identity was fabricated. Customer-to-customer RLS isolation has not been independently exercised.
-- A standalone database verification command could not run because application credentials are not exposed to the Bash runtime. This does not imply missing application configuration: browser quote submission succeeded. No credentials were printed.
-- Live pricing configuration/editor, ZIP coverage enforcement, tax jurisdiction rules, promotions, and credit-eligibility lookup are not implemented. Pricing engine values must be sourced only from trusted server configuration; never accept eligibility values from customers.
-- Real scheduling adapter, availability, booking state machine, cancellations/rescheduling, payments/deposits/refunds/receipts, verified webhooks, and reconciliation are not implemented.
-- Loyalty earning/redemption, referral links/attribution/qualification, reversible rewards, review requests, account closure, password recovery, and advanced account history are not implemented. Existing tables are foundations, not completed programs.
-- Owner configuration editing, customer management, audit-event emission, retention jobs, conversion tracking, outbound email/SMS, and analytics are not implemented. Automatic confirmation email is explicitly unavailable.
-- No published service-area list, contact details, verified insurance/staff credentials, approved policies, or approved reward values. Preliminary notices require legal/owner review.
-- Full automated security/accessibility coverage and a durable production rate-limit cleanup policy remain outstanding. Current throttling relies on the trusted deployment proxy's forwarded IP; verify trusted-header handling before release.
+- Preserve the Kiya Clean Co. identity, plum/ivory styling, existing project records, ownership boundaries, service catalog, and routes. The November 7 cleanup replaced AI-template marketing copy, removed unused starter imagery and the `v0.app` metadata tag, corrected misleading coverage wording, and removed inactive rewards promotions from primary navigation.
+- Current imagery includes generated residential interiors; authentic owner-approved photography, logo/icon review, final design approval, and mobile visual acceptance remain open.
+- Public marketing pages: home, services and four service details, about, contact and FAQ, ZIP-based service-area request, quote wizard, preliminary policy pages, and truthful inactive rewards/referrals pages. Search indexing remains disabled pending approved launch.
+- No invented phone number, operating hours, staff credentials, ratings, insurance claims, service ZIP codes, business rates, or customer testimonials.
 
-## Environment
-Provided by Supabase: NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY (public browser-safe key), SUPABASE_SERVICE_ROLE_KEY (server-only), NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL (preview auth callback). Never put the service key in a public variable. Other injected Postgres credentials are unused.
+## 2. Existing working application foundations
 
-No payment, calendar, email, analytics, or AI integration is used by this app. Do not add keys until a provider implementation is selected and approved.
+- Six-step quote intake validates ZIP, service, home size, extras, frequency, contact, consent, and optional date. Quotes are requests, not bookings or price commitments.
+- Supabase quote persistence adapter, duplicate-submission checks, same-origin JSON validation, payload limits, honeypot, rate limiter, and trusted customer identity checks exist in source.
+- Customer email/password auth and account views; server-gated customer request details and preferences; pending quote withdrawal; read-only owner request list using trusted `app_metadata`.
+- Pricing arithmetic supports owner-supplied rules in integer cents; no approved live rate configuration exists.
+- Estimate lifecycle, availability candidates, and booking/staff transition contracts have isolated tests but are not connected to reviewed live storage, scheduling resources, or paid-job operations.
+- Existing Supabase foundation tables have been reported previously; exact current DDL, grants, RLS predicates, constraints, and migration state have **not been independently inspected** in this latest work. Do not assume a table's presence or a named RLS policy proves data isolation.
 
-## Essential owner actions
-1. Supply approved contact details, service ZIP codes, service inclusions/exclusions, rates, taxes/fees, and cancellation/privacy terms.
-2. Select the authoritative booking provider and payment approach, then connect sandbox credentials for development; do not enable live payments yet.
-3. Provide a controlled mailbox for end-to-end auth testing and approve the initial administrator identity. Admin provisioning must be a trusted backend operation, not public signup.
-4. Approve reward/referral rules before their implementation is enabled.
+## 3. Approved Stripe test-mode payment implementation
 
-## Next engineering action
-Implement protected owner configuration and load validated coverage/pricing from it, then connect one booking provider. Remaining unfinished code is engineering work, not merely an owner-credential blocker.
+Source additions under `lib/payments/`, `app/api/payments/`, `components/payment-choice.tsx`, and `app/payment/return/`:
+
+- Payment choices `full` and `deposit`; stages `initial` and `balance`.
+- Full payment uses the exact approved total. Deposit payment uses an explicitly approved amount, retains the outstanding balance, and permits a balance checkout only after the deposit-paid state is durably verified.
+- Unknown, negative, fractional, expired, under-minimum, unapproved, and customer-supplied price variants fail closed. Approved offer/terms, authenticated ownership, and a reservation hold must be present.
+- Stripe Checkout adapter is **test-only**, accepts `sk_test_` credentials and explicit opt-in, uses card payments and USD, pins Stripe API version `2026-10-28.endive`, and verifies returned amount, session test-mode identity, and hosted Checkout URL.
+- Raw-body Stripe webhook HMAC verification checks signatures and event timestamps before parsing payment events. Signed results require an atomic event ledger, exact session/booking/amount reconciliation, and reservation authority before any paid/confirmed status is written.
+- Checkout sessions cannot outlive the approved booking hold; orphan sessions are expired on local attach failure when possible. Stripe redirect landing page makes **no** payment or booking confirmation claim.
+- Reusable payment-choice UI is implemented but deliberately not attached to a public booking page until a durable authorized booking is supplied.
+- Both public endpoints deliberately return **503** without correct test-mode configuration and a verified durable payment adapter. **The repository still uses an intentionally unconfigured payment store**. There is currently no executable, backed reservation-to-payment transaction.
+
+**Not completed:** no connected Stripe account, no active webhook destination, no test Checkout Session with a real `sk_test_` key, no live payment authorization, no database payment ledger or atomic reservation adapter, no deposit-balance invoice or receipt, no refund/reconciliation operations, and no production payment capability.
+
+## 4. Latest source-level verification (November 7, 2026)
+
+Verified in an isolated Vercel sandbox, with synthetic data and no live customer mutations:
+
+| Check | Result | Boundary |
+| --- | --- | --- |
+| TypeScript | PASS | Source compilation |
+| Next.js optimized production build | PASS | Builds routes but does not verify external services |
+| Unit and contract tests | **149 passed, 0 failed** | Synthetic/mocked database and payment providers |
+| Desktop/mobile Playwright | **16 passed, 0 failed** | Local browser, quote success mocked |
+| Local HTTP smoke tests | **11 passed, 0 failed** | Invalid quote attempts, baseline security, disabled payment endpoints |
+| Live Supabase schema/RLS inspection | **UNVERIFIED** | Connected Supabase inspection returned permission denied |
+| Actual Stripe test payment + webhook processing | **UNVERIFIED** | No test credentials or atomic persistence; endpoints disabled |
+| Authenticated customer A/B isolation | **UNVERIFIED** | Controlled identities and verified test database not available |
+| Deployment of current branch | **NOT DONE** | Draft PR remains unmerged |
+
+Historical evidence: earlier phases exercised a mobile six-step quote flow and a synthetic QA request and reported foundational RLS and table names. These earlier reports do not replace current authorized database inspection or a live paid-booking test.
+
+## 5. Release-critical engineering work
+
+1. **Inspect the actual database** through authorized read-only schema, migration, RLS, grant, index, constraint, and database-backup evidence. Confirm a **data-isolated non-production environment**; do not reuse production customer records for tests.
+2. Implement owner-only configuration for verified service ZIPs, cleaning scope, exclusions, working windows, team/resource availability, service durations/buffers, timezone, approved rates, taxes/fees, and deposit amount/terms. The browser must never choose amounts or approval status.
+3. Implement **atomic reservation and payment storage** against a reviewed migration: authenticated customer/order ownership; exclusion/locking to prevent double booking; hold expiry; unique checkout claim/session/event IDs; pricing snapshot; versioned terms; deposit and outstanding balance; durable event replay and refund reconciliation; auditable outbox. No read-then-insert outside a transaction.
+4. Connect `PaymentStore` to the reviewed storage and replace `unconfiguredPaymentStore` only after isolation/security evidence. Keep `KIYA_STRIPE_TEST_ENABLED` limited to test keys; do not add live keys or create real charges.
+5. Connect owner-approved availability and appointment management to the booking state machine. Handle expired holds, late webhook delivery, conflicting reservations, canceled/failed payments, duplicate events, and overdue balances without false confirmations.
+6. Wire authenticated booking detail and payment-choice UI only to verified approved offers; add secure balance-payment initiation, customer receipts, owner payment and refund views, notifications, and cancellation/rescheduling handling.
+7. Integrate a sandbox email sender and test account recovery and customer/owner notifications. Do not send production mail during development.
+8. Complete legal/owner review: public contact details, service scope, availability ZIPs, taxes/fees, deposit/refund/cancellation terms, policies, and business identifiers; replace or explicitly approve photography and final design.
+
+## 6. Test-only configuration
+
+Do not put secrets into source, chat, `NEXT_PUBLIC_` variables, or committed local files.
+
+- `KIYA_STRIPE_TEST_ENABLED=true` — explicit feature switch; must remain off until durable persistence is ready.
+- `STRIPE_SECRET_KEY=sk_test_...` — secret, test-mode only; live keys are rejected in code.
+- `STRIPE_WEBHOOK_SECRET=whsec_...` — secret for the exact test webhook destination.
+- `KIYA_CHECKOUT_ORIGIN=https://<verified-preview-origin>` — trusted HTTPS host; never derived from request headers.
+- `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SERVICE_ROLE_KEY` — maintain existing separated browser/server access; never expose the service-role key to clients.
+- `AUTH_RECOVERY_ENABLED` remains off until a verified mail and recovery flow exists.
+
+The test webhook path is `/api/payments/webhook`; the checkout POST path is `/api/payments/checkout`. Do not register the webhook for real customer activity while it responds 503. Stripe sessions and events must never be acknowledged as paid before durable, authenticated, exact-amount reconciliation.
+
+## 7. Owner decisions still needed
+
+- Approved actual cleaning rates, minimum charges, extras, taxes/fees and service scope.
+- **Deposit amount or rule**, whether refundable, when the balance is due, and what happens when a customer cancels or does not pay.
+- Accepted service ZIPs, real available staff/resources and work times, booking lead time and company timezone.
+- Verified business contact details, customer policies, and authority to use photography/logos.
+- A test-only Stripe account/key/webhook setup entered directly into the secret manager when engineering preconditions are met; controlled test accounts and a separate safe test database.
+
+These are genuine missing inputs. The code work above has been completed independently of them; they do not justify making up values.
+
+## 8. Launch gates and decision
+
+**NO-GO remains mandatory** until all of these have fresh evidence:
+
+- Owner configuration is reviewed and persisted; actual service area and rates are correct.
+- Authenticated reservation availability, locking, expiry, cancellation, and rescheduling pass concurrency tests.
+- Test full-payment and deposit-plus-balance flows succeed end to end, including Stripe signature validation, duplicate/replayed/out-of-order webhooks, failures, refunds, real receipts and reconciliation.
+- Customer A/B and admin/staff authorization tests pass against isolated real Supabase RLS.
+- All required policies and notifications are approved and tested, monitoring/backup/restore are in place, and production rollout/rollback is rehearsed.
+- No unresolved high-risk defects, exposed secrets, fabricated public claims, or unauthorized payment/production changes.
+
+**Next engineering action:** gain authorized, read-only schema/RLS evidence and isolated staging storage; then implement and test the atomic `PaymentStore` and reservation adapter. No production release, PR merge, live payment, new paid account, or database mutation is authorized or claimed by this record.
