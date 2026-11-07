@@ -11,11 +11,21 @@ test.beforeEach(async ({ context }) => {
 
 test('homepage imagery, zoom and responsive width', async ({ page }) => {
   await page.goto('/')
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('higher standard')
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('House cleaning')
   await expect(page.locator('.hero-photo img')).toBeVisible()
   expect(await page.locator('.hero-photo img').evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0)).toBe(true)
   expect(await page.locator('meta[name=viewport]').getAttribute('content')).not.toContain('maximum-scale=1')
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
+})
+
+test('public copy removes template markers and accurately describes ZIP entry', async ({ page }) => {
+  await page.goto('/')
+  await expect(page.locator('meta[name=generator]')).toHaveCount(0)
+  await expect(page.getByRole('link', { name: 'Administration' })).toHaveCount(0)
+  await expect(page.getByRole('link', { name: 'Rewards' })).toHaveCount(0)
+  await page.getByRole('textbox', { name: 'Your five-digit ZIP code' }).fill('28227')
+  await page.getByRole('button', { name: 'Continue to quote' }).click()
+  await expect(page).toHaveURL(/\\/quote\\?zip=28227$/)
 })
 
 test('mobile navigation Escape restores focus', async ({ page }) => {
@@ -67,12 +77,12 @@ test('quote preference flows into mocked persistence request, never a booking', 
   await page.getByLabel('Preferred cleaning date (optional)').fill('2099-03-01')
   await advance()
   await expect(page.getByText('2099-03-01', { exact: true })).toBeVisible()
-  await expect(page.getByText('Instant prices and online scheduling are not configured.', { exact: false })).toBeVisible()
+  await expect(page.getByText('Pricing and scheduling will be confirmed separately.', { exact: false })).toBeVisible()
   await page.getByRole('textbox', { name: 'Your name' }).fill('Synthetic QA')
   await page.getByRole('textbox', { name: 'Email address' }).fill('synthetic@example.test')
   await page.getByRole('checkbox', { name: 'I agree that Kiya' }).check()
   await page.getByRole('button', { name: 'Send my request' }).click()
-  await expect(page.getByRole('heading', { name: 'Your fresh start is on our list.' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Quote request received.' })).toBeVisible()
   expect(captured).toMatchObject({ preferredDate: '2099-03-01', service: 'Deep Cleaning', frequency: 'Every two weeks', extras: ['Oven cleaning'] })
   expect(captured).not.toHaveProperty('totalCents')
   expect(captured).not.toHaveProperty('status', 'confirmed')

@@ -9,7 +9,7 @@ export default function Page() {
     <main>
       <section className="hero shell">
         <div className="hero-copy">
-          <p className="eyebrow"><span /> RESIDENTIAL CLEANING</p>
+          <p className="eyebrow">RESIDENTIAL CLEANING</p>
           <h1>House cleaning,<br /><em>made straightforward.</em></h1>
           <p className="hero-description">
             Standard, deep, move-in, and recurring cleaning.<br />
