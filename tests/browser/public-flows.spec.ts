@@ -25,7 +25,7 @@ test('public copy removes template markers and accurately describes ZIP entry', 
   await expect(page.getByRole('link', { name: 'Rewards' })).toHaveCount(0)
   await page.getByRole('textbox', { name: 'Your five-digit ZIP code' }).fill('28227')
   await page.getByRole('button', { name: 'Continue to quote' }).click()
-  await expect(page).toHaveURL(/\\/quote\\?zip=28227$/)
+  await expect(page).toHaveURL(url => url.pathname === '/quote' && url.searchParams.get('zip') === '28227')
 })
 
 test('mobile navigation Escape restores focus', async ({ page }) => {
