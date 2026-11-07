@@ -32,7 +32,7 @@ Source additions under `lib/payments/`, `app/api/payments/`, `components/payment
 - Unknown, negative, fractional, expired, under-minimum, unapproved, and customer-supplied price variants fail closed. Approved offer/terms, authenticated ownership, and a reservation hold must be present.
 - Stripe Checkout adapter is **test-only**, accepts `sk_test_` credentials and explicit opt-in, uses card payments and USD, pins Stripe API version `2026-10-28.endive`, and verifies returned amount, session test-mode identity, and hosted Checkout URL.
 - Raw-body Stripe webhook HMAC verification checks signatures and event timestamps before parsing payment events. Signed results require an atomic event ledger, exact session/booking/amount reconciliation, and reservation authority before any paid/confirmed status is written.
-- Checkout sessions cannot outlive the approved booking hold; orphan sessions are expired on local attach failure when possible. Stripe redirect landing page makes **no** payment or booking confirmation claim.
+- Checkout sessions cannot outlive the approved booking hold; saved sessions must match actor, booking, payment choice, and payment stage; orphan sessions are expired on local attach failure when possible. Stripe redirect landing page makes **no** payment or booking confirmation claim.
 - Reusable payment-choice UI is implemented but deliberately not attached to a public booking page until a durable authorized booking is supplied.
 - Both public endpoints deliberately return **503** without correct test-mode configuration and a verified durable payment adapter. **The repository still uses an intentionally unconfigured payment store**. There is currently no executable, backed reservation-to-payment transaction.
 
@@ -46,7 +46,7 @@ Verified in an isolated Vercel sandbox, with synthetic data and no live customer
 | --- | --- | --- |
 | TypeScript | PASS | Source compilation |
 | Next.js optimized production build | PASS | Builds routes but does not verify external services |
-| Unit and contract tests | **149 passed, 0 failed** | Synthetic/mocked database and payment providers |
+| Unit and contract tests | **150 passed, 0 failed** | Synthetic/mocked database and payment providers |
 | Desktop/mobile Playwright | **16 passed, 0 failed** | Local browser, quote success mocked |
 | Local HTTP smoke tests | **11 passed, 0 failed** | Invalid quote attempts, baseline security, disabled payment endpoints |
 | Live Supabase schema/RLS inspection | **UNVERIFIED** | Connected Supabase inspection returned permission denied |
