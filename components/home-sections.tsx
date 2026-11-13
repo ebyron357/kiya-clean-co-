@@ -1,14 +1,19 @@
-import { Plus } from 'lucide-react'
+import Image from 'next/image'
+import { ArrowUpRight, Plus } from 'lucide-react'
 
 export function Hero() {
   return (
-    <section className="container hero" aria-labelledby="hero-title">
-      <div className="hero-copy">
-        <h1 id="hero-title">Home cleaning by Kiya Clean Co.</h1>
-        <p>Standard, deep, and move-out cleaning. Tell us about your home to get a quote.</p>
-        <div className="hero-actions">
-          <a className="button button-primary" href="#quote">Get a free quote</a>
-          <a className="text-link" href="#services">View services</a>
+    <section className="hero-shell" aria-labelledby="hero-title">
+      <div className="hero">
+        <div className="hero-copy">
+          <p className="section-label">Residential cleaning</p>
+          <h1 id="hero-title">Home cleaning,<br/><span>by Kiya.</span></h1>
+          <p className="hero-description">A regular clean, a deeper clean, or help with a move. Tell us what your home needs.</p>
+          <a className="button hero-button" href="#quote">Get a free quote <ArrowUpRight size={20} aria-hidden="true"/></a>
+          <p className="hero-note">No payment required to request a quote.</p>
+        </div>
+        <div className="hero-photo">
+          <Image src="/images/home-interior.jpg" alt="A living room with natural wood furniture and light linen seating" fill priority sizes="(max-width: 767px) 100vw, 55vw"/>
         </div>
       </div>
     </section>
@@ -23,14 +28,14 @@ const services = [
 export function Services() {
   return (
     <section className="container section" id="services">
-      <div className="section-heading"><h2>Cleaning services</h2></div>
+      <div className="section-heading"><div><p className="section-label">Our services</p><h2>What does your<br className="mobile-break"/> home need?</h2></div><p>Choose the clean that fits.<br/>We&apos;ll confirm the details with you.</p></div>
       <div className="service-grid">
         {services.map(({ id, name, text, items }) => (
           <article className="service-card" key={id}>
             <h3>{name}</h3>
             <p>{text}</p>
             <ul>{items.map(item => <li key={item}>{item}</li>)}</ul>
-            <a className="service-link" href={`?service=${id}#quote`}>Request a quote<span className="sr-only"> for {name.toLowerCase()}</span></a>
+            <a className="service-link" href={`?service=${id}#quote`}>Request a quote<span className="sr-only"> for {name.toLowerCase()}</span><ArrowUpRight size={20} aria-hidden="true"/></a>
           </article>
         ))}
       </div>
@@ -39,11 +44,11 @@ export function Services() {
   )
 }
 export function HowItWorks() {
-  return <section className="container section" id="how-it-works"><h2>How to book</h2><ol className="steps">{[
+  return <section className="booking-section" id="how-it-works"><div className="container booking-layout"><div className="booking-heading"><p className="section-label">From quote to clean</p><h2>Here&apos;s how<br/>it works.</h2></div><ol className="steps">{[
     ['Request a quote', 'Choose a service and send your home details.'],
     ['Review the price', 'We confirm service coverage, the cleaning checklist, and the cost.'],
     ['Confirm a date', 'Agree on an available date before the booking is confirmed.'],
-  ].map(([title, text]) => <li className="step" key={title}><h3>{title}</h3><p>{text}</p></li>)}</ol></section>
+  ].map(([title, text]) => <li className="step" key={title}><h3>{title}</h3><p>{text}</p></li>)}</ol></div></section>
 }
 export function Faq() {
   return <section className="container section faq" id="faq"><div><h2>Common questions</h2></div><div className="faq-items">{[
@@ -55,5 +60,5 @@ export function Faq() {
   ].map(([q,a]) => <details key={q}><summary>{q}<Plus size={18}/></summary><p>{a}</p></details>)}</div></section>
 }
 export function Footer() {
- return <footer className="site-footer"><div className="container footer-top"><a href="/" className="footer-brand" aria-label="Kiya Clean Co. home">kiya.<span>CLEAN CO.</span></a><nav aria-label="Footer navigation"><a href="/#services">Services</a><a href="/#quote">Get a quote</a><a href="/privacy">Privacy</a></nav></div><div className="container footer-bottom"><span>© {new Date().getFullYear()} Kiya Clean Co.</span></div></footer>
+ return <footer className="site-footer"><div className="container footer-top"><a href="/" className="footer-brand" aria-label="Kiya Clean Co. home">kiya.<span>CLEAN CO.</span></a><nav aria-label="Footer navigation"><a href="/#services">Services</a><a href="/#quote">Get a quote</a><a href="/privacy">Privacy</a></nav></div><div className="container footer-bottom"><span>© {new Date().getFullYear()} Kiya Clean Co.</span><a href="https://unsplash.com" target="_blank" rel="noreferrer">Interior photography: Unsplash</a></div></footer>
 }
