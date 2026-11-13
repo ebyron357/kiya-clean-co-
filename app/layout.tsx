@@ -1,12 +1,14 @@
 import type { Metadata, Viewport } from 'next'
 import { Manrope } from 'next/font/google'
+import { homeDescription, homeTitle, indexingMetadata, pageMetadata, siteName, siteOrigin } from '@/lib/site-metadata'
 import './globals.css'
 
 const manrope = Manrope({ subsets: ['latin'], variable: '--font-manrope' })
 export const metadata: Metadata = {
-  title: 'Kiya Clean Co. | Home Cleaning',
-  description: 'Standard, deep, and move-in or move-out home cleaning from Kiya Clean Co. View services and request a free quote.',
-  applicationName: 'Kiya Clean Co.',
+  ...pageMetadata(homeTitle, homeDescription, '/'),
+  metadataBase: new URL(siteOrigin),
+  robots: indexingMetadata(process.env.VERCEL_ENV),
+  applicationName: siteName,
   manifest: '/manifest.webmanifest',
 }
 export const viewport: Viewport = { width: 'device-width', initialScale: 1, maximumScale: 1, themeColor: '#fffdfa' }
