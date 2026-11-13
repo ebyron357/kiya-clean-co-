@@ -116,7 +116,28 @@ textarea { resize: vertical; min-height: 90px; }
 .consent input { margin-top: 4px; width: 18px; height: 18px; accent-color: var(--primary); flex-shrink: 0; }
 .consent span { font-size: 14px; font-weight: 400; color: var(--muted-foreground); }
 .consent a { text-decoration: underline; text-underline-offset: 2px; }
-.submit-button { width: 100%; margin-top: 20px; }
+.quote-card form { scroll-margin-top: 20px; }
+.quote-progress { list-style: none; display: flex; gap: 12px; margin: 0 0 24px; padding: 0; font-size: 14px; color: var(--muted-foreground); }
+.quote-progress li { flex: 1; border-top: 3px solid var(--border); padding-top: 10px; white-space: nowrap; }
+.quote-progress li[aria-current='step'] { border-color: var(--primary); color: var(--primary); font-weight: 650; }
+.quote-progress li[data-complete='true'] { border-color: var(--primary); }
+.quote-navigation { display: flex; gap: 10px; margin-top: 24px; }
+.quote-navigation .button { padding-inline: 14px; gap: 8px; font-size: 14px; }
+.quote-next { flex: 1; }
+.home-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.form-full-width { grid-column: 1 / -1; }
+.quote-review { display: flex; flex-direction: column; gap: 16px; }
+.review-group { padding: 16px; border: 1px solid var(--border); border-radius: 8px; }
+.review-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.review-heading h4 { margin: 0; font-size: 15px; font-weight: 650; }
+.review-edit { border: 0; background: transparent; color: var(--primary); font-size: 14px; min-height: 44px; min-width: 44px; text-decoration: underline; text-underline-offset: 4px; }
+.review-details { display: flex; flex-direction: column; gap: 10px; margin: 8px 0 0; font-size: 14px; }
+.review-details > div { display: flex; justify-content: space-between; gap: 16px; }
+.review-details dt { color: var(--muted-foreground); flex-shrink: 0; }
+.review-details dd { margin: 0; text-align: right; overflow-wrap: anywhere; min-width: 0; }
+.review-details .review-notes { flex-direction: column; gap: 4px; }
+.review-notes dd { text-align: left; white-space: pre-wrap; }
+.quote-card [aria-invalid='true'] { border-color: var(--primary); outline: 1px solid var(--primary); }
 .form-bottom-note { font-size: 14px; margin-top: 12px; color: var(--muted-foreground); }
 .form-error { padding: 12px; background: var(--muted); color: var(--foreground); border: 1px solid var(--primary); border-radius: 6px; font-size: 14px; margin-top: 16px; }
 .honeypot { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
