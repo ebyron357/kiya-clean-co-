@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { ArrowLeft, ArrowRight, ArrowUpRight, CheckCircle2, Loader2 } from 'lucide-react'
 import { quoteSchema } from '@/lib/quote-schema'
 import { quoteDetailsSchema, quoteHomeSchema, quoteStepForField, quoteSteps, type QuoteDetails, type QuoteStep } from '@/lib/quote-flow'
 import { QuoteFields } from './quote-fields'
@@ -94,18 +93,15 @@ export function QuoteForm({ initialService }: { initialService: QuoteDetails['se
   return <section className="quote-section" id="quote">
     <div className="container quote-layout">
       <div className="quote-copy">
-        <p className="section-label">Tell us about your home</p>
-        <h2>Let&apos;s get<br/>your quote.</h2>
-        <p>Send your details and cleaning requirements. We&apos;ll contact you to confirm availability and price.</p>
-        <p>No payment is required. Sending this form does not confirm a booking.</p>
+        <h2>Request a quote</h2>
+        <p>Tell us about your home. We&apos;ll contact you with availability and a price before you book.</p>
       </div>
       <div className="quote-card">
         {success ? <div className="quote-success" role="status">
-          <span className="success-icon"><CheckCircle2 size={36} aria-hidden="true"/></span>
           <h3 ref={successHeading} tabIndex={-1}>Quote request received</h3>
           <p>Your details have been saved. We&apos;ll contact you about availability and pricing.</p>
           <p className="muted">This is a quote request, not a confirmed booking. No payment has been taken.</p>
-          <a href="#services" className="button button-outline">Explore our services <ArrowUpRight size={18} aria-hidden="true"/></a>
+          <a href="#services" className="button button-outline">View services</a>
         </div> : <form ref={formRef} onSubmit={submit} noValidate aria-busy={pending} data-ready={ready} onKeyDown={event => { if (event.key === 'Enter' && (event.nativeEvent.isComposing || event.nativeEvent.keyCode === 229)) event.preventDefault() }}>
           <ol className="quote-progress" aria-label="Quote progress">
             {quoteSteps.map((label, index) => <li key={label} aria-current={step === index ? 'step' : undefined} data-complete={index < step}><span aria-hidden="true">{index + 1}.</span> {label}</li>)}
@@ -123,9 +119,9 @@ export function QuoteForm({ initialService }: { initialService: QuoteDetails['se
           </fieldset>
           {error && <p id="quote-error" role="alert" className="form-error">{error}</p>}
           <div className="quote-navigation">
-            {step > 0 && <button type="button" className="button button-outline" disabled={pending} onClick={() => changeStep(step === 2 ? 1 : 0)}><ArrowLeft size={18} aria-hidden="true"/>Back</button>}
+            {step > 0 && <button type="button" className="button button-outline" disabled={pending} onClick={() => changeStep(step === 2 ? 1 : 0)}>Back</button>}
             <button className="button button-primary quote-next" type="submit" disabled={pending || !ready}>
-              {pending ? <>Sending <Loader2 className="spinner" size={18} aria-hidden="true"/></> : step === 2 ? <>Send request <ArrowUpRight size={18} aria-hidden="true"/></> : <>{step === 0 ? 'Continue' : 'Review request'} <ArrowRight size={18} aria-hidden="true"/></>}
+              {pending ? 'Sending…' : step === 2 ? 'Send request' : step === 0 ? 'Continue' : 'Review request'}
             </button>
           </div>
           <p className="form-bottom-note">{step === 2 ? 'No payment. No booking until you confirm.' : 'Your details are only sent when you submit the final step.'}</p>
