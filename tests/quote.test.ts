@@ -1,8 +1,27 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { quoteSchema } from '../lib/quote-schema'
-import { quoteHomeSchema, quoteDetailsSchema, quoteStepForField } from '../lib/quote-flow'
+import { getQuoteService, quoteServiceHref, sectionHref, quoteHomeSchema, quoteDetailsSchema, quoteStepForField } from '../lib/quote-flow'
 const valid = { submissionId: '123e4567-e89b-42d3-a456-426614174000', name: 'Test Customer', email: 'TEST@example.com', phone: '', zip: '28202', service: 'standard', frequency: 'once', bedrooms: '2', notes: '', consent: true, website: '' }
+test('service query accepts known services and safely defaults', () => {
+  assert.equal(getQuoteService('deep'), 'deep')
+  assert.equal(getQuoteService('move'), 'move')
+  for (const value of ['standard', 'invalid', null, undefined, ['deep']]) assert.equal(getQuoteService(value), 'standard')
+})
+test('radio selection preserves other query parameters and section', () => {
+  assert.equal(quoteServiceHref('https://kiya.example/?utm_source=email&service=standard#quote', 'deep'), '/?utm_source=email&service=deep#quote')
+})
+test('service links select the requested service without dropping other parameters', () => {
+  assert.equal(sectionHref('https://kiya.example/?utm_source=email&service=standard#services', '?service=move#quote'), '/?utm_source=email&service=move#quote')
+})
+test('section links preserve the selected service', () => {
+  assert.equal(sectionHref('https://kiya.example/?service=deep#quote', '/#faq'), '/?service=deep#faq')
+  assert.equal(sectionHref('https://kiya.example/?service=deep#faq', '#quote'), '/?service=deep#quote')
+})
+test('other pages and external links retain native navigation', () => {
+  for (const href of ['/privacy', '/', 'https://other.example/#quote']) assert.equal(sectionHref('https://kiya.example/?service=deep', href), null)
+  assert.equal(sectionHref('https://kiya.example/privacy', '/#quote'), null)
+})
 test('home step validates independently of contact details', () => {
   assert.equal(quoteHomeSchema.safeParse({ service: 'deep', zip: '28202', bedrooms: 'studio', frequency: 'once' }).success, true)
   assert.equal(quoteHomeSchema.safeParse({ ...valid, zip: '12' }).success, false)

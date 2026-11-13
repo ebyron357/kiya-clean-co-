@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import { SectionLink } from './section-link'
 
 export function Hero() {
   return (
@@ -7,7 +8,7 @@ export function Hero() {
         <div className="hero-copy">
           <h1 id="hero-title">Home cleaning.</h1>
           <p className="hero-description">Regular, deep, and move-out cleaning. Send us your home details for a price.</p>
-          <a className="button hero-button" href="#quote">Get a free quote</a>
+          <SectionLink className="button hero-button" href="#quote">Get a free quote</SectionLink>
         </div>
         <div className="hero-photo">
           <Image src="/images/home-interior.jpg" alt="A living room with natural wood furniture and light linen seating" fill priority sizes="(max-width: 767px) 100vw, 55vw"/>
@@ -32,7 +33,7 @@ export function Services() {
             <h3>{name}</h3>
             <p>{text}</p>
             <ul>{items.map(item => <li key={item}>{item}</li>)}</ul>
-            <a className="service-link" href={`?service=${id}#quote`}>Request a quote<span className="sr-only"> for {name.toLowerCase()}</span></a>
+            <SectionLink className="service-link" href={`?service=${id}#quote`}>Request a quote<span className="sr-only"> for {name.toLowerCase()}</span></SectionLink>
           </article>
         ))}
       </div>
@@ -57,5 +58,5 @@ export function Faq() {
   ].map(([q,a]) => <details key={q}><summary>{q}</summary><p>{a}</p></details>)}</div></section>
 }
 export function Footer() {
- return <footer className="site-footer"><div className="container footer-top"><a href="/" className="footer-brand" aria-label="Kiya Clean Co. home">Kiya Clean Co.</a><nav aria-label="Footer navigation"><a href="/#services">Services</a><a href="/#quote">Get a quote</a><a href="/privacy">Privacy</a></nav></div><div className="container footer-bottom"><span>© {new Date().getFullYear()} Kiya Clean Co.</span><a href="https://unsplash.com" target="_blank" rel="noreferrer">Interior photography: Unsplash</a></div></footer>
+ return <footer className="site-footer"><div className="container footer-top"><a href="/" className="footer-brand" aria-label="Kiya Clean Co. home">Kiya Clean Co.</a><nav aria-label="Footer navigation"><SectionLink href="/#services">Services</SectionLink><SectionLink href="/#quote">Get a quote</SectionLink><a href="/privacy">Privacy</a></nav></div><div className="container footer-bottom"><span>© {new Date().getFullYear()} Kiya Clean Co.</span><a href="https://unsplash.com" target="_blank" rel="noreferrer">Interior photography: Unsplash</a></div></footer>
 }

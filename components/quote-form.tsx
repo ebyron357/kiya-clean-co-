@@ -1,15 +1,18 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { quoteSchema } from '@/lib/quote-schema'
-import { quoteDetailsSchema, quoteHomeSchema, quoteStepForField, quoteSteps, type QuoteDetails, type QuoteStep } from '@/lib/quote-flow'
+import { getQuoteService, quoteServiceHref, quoteDetailsSchema, quoteHomeSchema, quoteStepForField, quoteSteps, type QuoteDetails, type QuoteStep } from '@/lib/quote-flow'
+import { SectionLink } from './section-link'
 import { QuoteFields } from './quote-fields'
 import { QuoteReview } from './quote-review'
 
 const stepDescriptions = ['Choose a service and tell us about your space.', 'Where should we send your quote? Optional fields are marked.', 'Check your details before sending your request.']
 
 export function QuoteForm({ initialService }: { initialService: QuoteDetails['service'] }) {
-  const [service, setService] = useState(initialService)
+  const searchParams = useSearchParams()
+  const service = searchParams ? getQuoteService(searchParams.get('service')) : initialService
   const [step, setStep] = useState<QuoteStep>(0)
   const [details, setDetails] = useState<QuoteDetails | null>(null)
   const [pending, setPending] = useState(false)
@@ -35,6 +38,11 @@ export function QuoteForm({ initialService }: { initialService: QuoteDetails['se
     const field = formRef.current?.elements.namedItem(errorField)
     if (field instanceof HTMLElement) field.focus({ preventScroll: true })
   }, [step, errorField, error])
+
+  function changeService(next: QuoteDetails['service']) {
+    if (sending.current) return
+    window.history.replaceState(null, '', quoteServiceHref(window.location.href, next))
+  }
 
   function changeStep(next: QuoteStep) {
     setError('')
@@ -101,7 +109,7 @@ export function QuoteForm({ initialService }: { initialService: QuoteDetails['se
           <h3 ref={successHeading} tabIndex={-1}>Quote request received</h3>
           <p>Your details have been saved. We&apos;ll contact you about availability and pricing.</p>
           <p className="muted">This is a quote request, not a confirmed booking. No payment has been taken.</p>
-          <a href="#services" className="button button-outline">View services</a>
+          <SectionLink href="#services" className="button button-outline">View services</SectionLink>
         </div> : <form ref={formRef} onSubmit={submit} noValidate aria-busy={pending} data-ready={ready} onKeyDown={event => { if (event.key === 'Enter' && (event.nativeEvent.isComposing || event.nativeEvent.keyCode === 229)) event.preventDefault() }}>
           <ol className="quote-progress" aria-label="Quote progress">
             {quoteSteps.map((label, index) => <li key={label} aria-current={step === index ? 'step' : undefined} data-complete={index < step}><span aria-hidden="true">{index + 1}.</span> {label}</li>)}
@@ -110,10 +118,10 @@ export function QuoteForm({ initialService }: { initialService: QuoteDetails['se
           <p className="form-intro">{stepDescriptions[step]}</p>
           <fieldset disabled={pending}>
             <legend className="sr-only">Quote request details</legend>
-            <QuoteFields step={step} service={service} onServiceChange={setService} errorField={errorField}/>
+            <QuoteFields step={step} service={service} onServiceChange={changeService} errorField={errorField}/>
             <div className="honeypot" aria-hidden="true"><label>Website<input name="website" tabIndex={-1} autoComplete="off"/></label></div>
             <div hidden={step !== 2}>
-              {details && <QuoteReview details={details} onEdit={changeStep}/>}
+              {details && <QuoteReview details={{ ...details, service }} onEdit={changeStep}/>}
               <label className="consent"><input name="consent" type="checkbox" required aria-invalid={errorField === 'consent' || undefined} aria-describedby={errorField === 'consent' ? 'quote-error' : undefined}/><span>I agree to be contacted about my quote and have read the <a href="/privacy" target="_blank" rel="noreferrer">privacy notice</a>.</span></label>
             </div>
           </fieldset>
