@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   applicationName: 'Kiya Clean Co.',
   manifest: '/manifest.webmanifest',
 }
-export const viewport: Viewport = { width: 'device-width', initialScale: 1, maximumScale: 1, themeColor: '#805035' }
+export const viewport: Viewport = { width: 'device-width', initialScale: 1, maximumScale: 1, themeColor: '#fffdfa' }
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return <html lang="en" className={`bg-background ${manrope.variable}`}><body className="font-sans text-foreground">{children}</body></html>
 }
