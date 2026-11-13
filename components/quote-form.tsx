@@ -2,9 +2,10 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { quoteSchema } from '@/lib/quote-schema'
+import { quoteSchema, type QuoteInput } from '@/lib/quote-schema'
+import { prepareQuoteSubmission, sendQuote, UNCONFIRMED_MESSAGE } from '@/lib/quote-submission'
+import { QuoteConfirmation } from './quote-confirmation'
 import { getQuoteService, quoteServiceHref, quoteDetailsSchema, quoteHomeSchema, quoteStepForField, quoteSteps, type QuoteDetails, type QuoteStep } from '@/lib/quote-flow'
-import { SectionLink } from './section-link'
 import { QuoteFields } from './quote-fields'
 import { QuoteReview } from './quote-review'
 
@@ -16,19 +17,18 @@ export function QuoteForm({ initialService }: { initialService: QuoteDetails['se
   const [step, setStep] = useState<QuoteStep>(0)
   const [details, setDetails] = useState<QuoteDetails | null>(null)
   const [pending, setPending] = useState(false)
-  const [success, setSuccess] = useState(false)
+  const [receipt, setReceipt] = useState<QuoteInput | null>(null)
+  const [requestFailed, setRequestFailed] = useState(false)
   const [error, setError] = useState('')
   const [errorField, setErrorField] = useState('')
   const [ready, setReady] = useState(false)
-  const submissionId = useRef<string | null>(null)
+  const lastSubmission = useRef<QuoteInput | null>(null)
   const sending = useRef(false)
   const formRef = useRef<HTMLFormElement>(null)
   const stepHeading = useRef<HTMLHeadingElement>(null)
   const previousStep = useRef<QuoteStep>(0)
-  const successHeading = useRef<HTMLHeadingElement>(null)
 
   useEffect(() => { setReady(true) }, [])
-  useEffect(() => { if (success) successHeading.current?.focus() }, [success])
   useEffect(() => {
     if (previousStep.current !== step) {
       stepHeading.current?.focus({ preventScroll: true })
@@ -45,6 +45,7 @@ export function QuoteForm({ initialService }: { initialService: QuoteDetails['se
   }
 
   function changeStep(next: QuoteStep) {
+    setRequestFailed(false)
     setError('')
     setErrorField('')
     setStep(next)
@@ -79,19 +80,20 @@ export function QuoteForm({ initialService }: { initialService: QuoteDetails['se
       return
     }
 
-    submissionId.current ||= crypto.randomUUID()
-    const input = { ...values, submissionId: submissionId.current, consent: form.get('consent') === 'on' }
+    const input = { ...values, submissionId: lastSubmission.current?.submissionId ?? crypto.randomUUID(), consent: form.get('consent') === 'on' }
     const parsed = quoteSchema.safeParse(input)
     if (!parsed.success) { showValidationError(parsed.error.issues[0]); return }
+    const submission = prepareQuoteSubmission(parsed.data, lastSubmission.current)
+    lastSubmission.current = submission
     sending.current = true
     setPending(true)
+    setRequestFailed(false)
     try {
-      const response = await fetch('/api/quotes', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(parsed.data) })
-      const result = await response.json()
-      if (!response.ok) throw new Error(result.error || 'Something went wrong. Please try again.')
-      setSuccess(true)
+      await sendQuote(submission)
+      setReceipt(submission)
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Unable to connect. Please try again.')
+      setRequestFailed(true)
+      setError(error instanceof Error ? error.message : UNCONFIRMED_MESSAGE)
     } finally {
       sending.current = false
       setPending(false)
@@ -105,12 +107,7 @@ export function QuoteForm({ initialService }: { initialService: QuoteDetails['se
         <p>Tell us about your home. We&apos;ll contact you with availability and a price before you book.</p>
       </div>
       <div className="quote-card">
-        {success ? <div className="quote-success" role="status">
-          <h3 ref={successHeading} tabIndex={-1}>Quote request received</h3>
-          <p>Your details have been saved. We&apos;ll contact you about availability and pricing.</p>
-          <p className="muted">This is a quote request, not a confirmed booking. No payment has been taken.</p>
-          <SectionLink href="#services" className="button button-outline">View services</SectionLink>
-        </div> : <form ref={formRef} onSubmit={submit} noValidate aria-busy={pending} data-ready={ready} onKeyDown={event => { if (event.key === 'Enter' && (event.nativeEvent.isComposing || event.nativeEvent.keyCode === 229)) event.preventDefault() }}>
+        {receipt ? <QuoteConfirmation receipt={receipt}/> : <form ref={formRef} onSubmit={submit} noValidate aria-busy={pending} data-ready={ready} onKeyDown={event => { if (event.key === 'Enter' && (event.nativeEvent.isComposing || event.nativeEvent.keyCode === 229)) event.preventDefault() }}>
           <ol className="quote-progress" aria-label="Quote progress">
             {quoteSteps.map((label, index) => <li key={label} aria-current={step === index ? 'step' : undefined} data-complete={index < step}><span aria-hidden="true">{index + 1}.</span> {label}</li>)}
           </ol>
@@ -129,7 +126,7 @@ export function QuoteForm({ initialService }: { initialService: QuoteDetails['se
           <div className="quote-navigation">
             {step > 0 && <button type="button" className="button button-outline" disabled={pending} onClick={() => changeStep(step === 2 ? 1 : 0)}>Back</button>}
             <button className="button button-primary quote-next" type="submit" disabled={pending || !ready}>
-              {pending ? 'Sending…' : step === 2 ? 'Send request' : step === 0 ? 'Continue' : 'Review request'}
+              {pending ? 'Sending…' : step === 2 ? (requestFailed ? 'Retry request' : 'Send request') : step === 0 ? 'Continue' : 'Review request'}
             </button>
           </div>
           <p className="form-bottom-note">{step === 2 ? 'No payment. No booking until you confirm.' : 'Your details are only sent when you submit the final step.'}</p>
