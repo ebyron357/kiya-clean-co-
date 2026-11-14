@@ -1,18 +1,14 @@
-import Image from 'next/image'
 import { ChevronDown, Plus } from 'lucide-react'
 import { SectionLink } from './section-link'
 
 export function Hero() {
   return (
     <section className="hero-shell" aria-labelledby="hero-title">
-      <div className="hero">
+      <div className="container hero">
+        <h1 id="hero-title">Regular, deep &amp; <span className="whitespace-nowrap">move-out</span> cleaning.</h1>
         <div className="hero-copy">
-          <h1 id="hero-title">Home cleaning.</h1>
-          <p className="hero-description">Regular, deep, and move-out cleaning. Send us your home details for a price.</p>
+          <p className="hero-description">Tell us your ZIP code, home size, and the clean you need. We&apos;ll confirm availability and price before you book.</p>
           <SectionLink className="button hero-button" href="#quote">Get a free quote</SectionLink>
-        </div>
-        <div className="hero-photo">
-          <Image src="/images/home-interior.jpg" alt="A living room with natural wood furniture and light linen seating" fill priority sizes="(max-width: 767px) 100vw, 55vw"/>
         </div>
       </div>
     </section>
@@ -66,5 +62,5 @@ export function Faq() {
   ].map(([q,a]) => <details key={q}><summary><span>{q}</span><Plus className="faq-toggle" size={20} aria-hidden="true" /></summary><p>{a}</p></details>)}</div></section>
 }
 export function Footer() {
- return <footer className="site-footer"><div className="container footer-top"><a href="/" className="footer-brand" aria-label="Kiya Clean Co. home">Kiya Clean Co.</a><nav aria-label="Footer navigation"><SectionLink href="/#services">Services</SectionLink><SectionLink href="/#quote">Get a quote</SectionLink><a href="/privacy">Privacy</a></nav></div><div className="container footer-bottom"><span>© {new Date().getFullYear()} Kiya Clean Co.</span><a href="https://unsplash.com" target="_blank" rel="noreferrer">Interior photography: Unsplash</a></div></footer>
+ return <footer className="site-footer"><div className="container footer-top"><a href="/" className="footer-brand" aria-label="Kiya Clean Co. home">Kiya Clean Co.</a><nav aria-label="Footer navigation"><SectionLink href="/#services">Services</SectionLink><SectionLink href="/#quote">Get a quote</SectionLink><a href="/privacy">Privacy</a></nav></div><div className="container footer-bottom"><span>© {new Date().getFullYear()} Kiya Clean Co.</span></div></footer>
 }
