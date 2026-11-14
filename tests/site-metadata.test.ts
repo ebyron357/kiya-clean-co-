@@ -9,7 +9,10 @@ test('home metadata consolidates query variants at the homepage canonical', () =
   assert.equal(metadata.description, homeDescription)
   assert.equal(metadata.openGraph?.url, '/')
   assert.equal(metadata.twitter?.title, homeTitle)
-  assert.deepEqual(metadata.openGraph?.images, [{ url: '/images/home-interior.jpg', alt: 'A bright, welcoming home interior' }])
+  assert.equal(metadata.openGraph?.images, undefined)
+  assert.equal(metadata.twitter?.images, undefined)
+  assert.ok(metadata.twitter && 'card' in metadata.twitter)
+  assert.equal(metadata.twitter.card, 'summary')
 })
 
 test('privacy has a distinct canonical and matching sharing details', () => {
