@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { ArrowRight, Check, Plus } from 'lucide-react'
+import { ChevronDown, Plus } from 'lucide-react'
 import { SectionLink } from './section-link'
 
 export function Hero() {
@@ -9,7 +9,7 @@ export function Hero() {
         <div className="hero-copy">
           <h1 id="hero-title">Home cleaning.</h1>
           <p className="hero-description">Regular, deep, and move-out cleaning. Send us your home details for a price.</p>
-          <SectionLink className="button hero-button" href="#quote">Get a free quote<ArrowRight size={20} aria-hidden="true" /></SectionLink>
+          <SectionLink className="button hero-button" href="#quote">Get a free quote</SectionLink>
         </div>
         <div className="hero-photo">
           <Image src="/images/home-interior.jpg" alt="A living room with natural wood furniture and light linen seating" fill priority sizes="(max-width: 767px) 100vw, 55vw"/>
@@ -28,14 +28,21 @@ export function Services() {
   return (
     <section className="container section" id="services">
       <div className="section-heading"><h2>Cleaning services</h2></div>
-      <div className="service-grid">
+      <div className="service-list">
         {services.map(({ id, name, text, items }) => (
-          <article className="service-card" key={id}>
-            <h3>{name}</h3>
-            <p>{text}</p>
-            <ul role="list">{items.map(item => <li key={item}><Check size={16} aria-hidden="true" /><span>{item}</span></li>)}</ul>
-            <SectionLink className="service-link" href={`?service=${id}#quote`}>Request a quote<span className="sr-only"> for {name.toLowerCase()}</span><ArrowRight size={20} aria-hidden="true" /></SectionLink>
-          </article>
+          <details className="service-item" key={id}>
+            <summary aria-labelledby={`service-${id}-name`} aria-describedby={`service-${id}-description`}>
+              <span className="service-summary-copy">
+                <span className="service-name" id={`service-${id}-name`}>{name}</span>
+                <span className="service-description" id={`service-${id}-description`}>{text}</span>
+              </span>
+              <ChevronDown className="service-toggle" size={20} aria-hidden="true" />
+            </summary>
+            <div className="service-inclusions">
+              <ul>{items.map(item => <li key={item}>{item}</li>)}</ul>
+              <SectionLink className="service-link" href={`?service=${id}#quote`}>Request a quote<span className="sr-only"> for {name.toLowerCase()}</span></SectionLink>
+            </div>
+          </details>
         ))}
       </div>
       <p className="section-footnote">We confirm the cleaning checklist and price before booking.</p>
@@ -47,7 +54,7 @@ export function HowItWorks() {
     ['Request a quote', 'Choose a service and send your home details.'],
     ['Review the price', 'We confirm service coverage, the cleaning checklist, and the cost.'],
     ['Confirm a date', 'Agree on an available date before the booking is confirmed.'],
-  ].map(([title, text], index) => <li className="step" key={title}><span className="step-number" aria-hidden="true">{index + 1}</span><div><h3>{title}</h3><p>{text}</p></div></li>)}</ol></div></section>
+  ].map(([title, text]) => <li className="step" key={title}><h3>{title}</h3><p>{text}</p></li>)}</ol></div></section>
 }
 export function Faq() {
   return <section className="container section faq" id="faq"><div><h2>Common questions</h2></div><div className="faq-items">{[
